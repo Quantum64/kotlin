@@ -18,8 +18,8 @@ class D {
 import a.A.<!CONFLICTING_IMPORT!>B<!>
 import a.D.<!CONFLICTING_IMPORT!>B<!>
 
-fun test(b: <!UNRESOLVED_REFERENCE!>B<!>) {
-    <!UNRESOLVED_REFERENCE!>B<!>()
+fun test(b: <!AMBIGUOUS_TYPES!>B<!>) {
+    <!INAPPLICABLE_CANDIDATE!>B<!>()
 }
 
 // FILE: d.kt
@@ -27,6 +27,6 @@ import a.A.*
 import a.D.*
 
 // todo ambiguvity here
-fun test2(b: <!UNRESOLVED_REFERENCE!>B<!>) {
-    <!UNRESOLVED_REFERENCE!>B<!>()
+fun test2(b: <!AMBIGUOUS_TYPES!>B<!>) {
+    <!INAPPLICABLE_CANDIDATE!>B<!>()
 }

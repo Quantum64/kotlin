@@ -15,4 +15,4 @@ package c
 import a.*
 import b.*
 
-class Y : <!UNRESOLVED_REFERENCE!>X<!>
+class Y : <!AMBIGUOUS_TYPES!>X<!>

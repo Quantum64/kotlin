@@ -30,6 +30,6 @@ fun test() {
     <!OVERLOAD_RESOLUTION_AMBIGUITY!>Cls<!>()
     take(<!OVERLOAD_RESOLUTION_AMBIGUITY!>Cls<!>())
 
-    <!UNRESOLVED_REFERENCE!>Cls2<!>()
-    take(<!UNRESOLVED_REFERENCE!>Cls2<!>())
+    <!INAPPLICABLE_CANDIDATE!>Cls2<!>()
+    take(<!INAPPLICABLE_CANDIDATE!>Cls2<!>())
 }

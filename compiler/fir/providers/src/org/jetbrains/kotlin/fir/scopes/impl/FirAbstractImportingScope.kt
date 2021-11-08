@@ -6,14 +6,19 @@
 package org.jetbrains.kotlin.fir.scopes.impl
 
 import org.jetbrains.kotlin.descriptors.ClassKind
+import org.jetbrains.kotlin.descriptors.EffectiveVisibility
+import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.declarations.FirMemberDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirResolvedImport
+import org.jetbrains.kotlin.fir.declarations.builder.buildErrorClassLike
+import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.utils.expandedConeType
+import org.jetbrains.kotlin.fir.diagnostics.ConeAmbiguousType
 import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.moduleVisibilityChecker
 import org.jetbrains.kotlin.fir.resolve.ScopeSession
+import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.resolve.transformers.ensureResolvedForCalls
 import org.jetbrains.kotlin.fir.scopes.FirContainingNamesAwareScope
@@ -57,6 +62,7 @@ abstract class FirAbstractImportingScope(
         get() = when (this) {
             is FirTypeAliasSymbol -> fir.expandedConeType?.lookupTag?.toSymbol(session)?.fullyExpandedSymbol
             is FirClassSymbol<*> -> this
+            is FirErrorClassLikeSymbol -> null
         }
 
     private fun FirClassSymbol<*>.getStaticsScope(): FirContainingNamesAwareScope? =
@@ -72,28 +78,54 @@ abstract class FirAbstractImportingScope(
         provider.getClassLikeSymbolByClassId(classId)?.fullyExpandedSymbol?.getStaticsScope()
 
     protected fun findSingleClassifierSymbolByName(name: Name?, imports: List<FirResolvedImport>): FirClassLikeSymbol<*>? {
-        var result: FirClassLikeSymbol<*>? = null
+        val symbols = mutableListOf<FirClassLikeSymbol<*>>()
+        var lastSymbol: FirClassLikeSymbol<*>? = null
         for (import in imports) {
             val importedName = name ?: import.importedName ?: continue
             val classId = import.resolvedParentClassId?.createNestedClassId(importedName)
                 ?: ClassId.topLevel(import.packageFqName.child(importedName))
             val symbol = provider.getClassLikeSymbolByClassId(classId) ?: continue
             if (!filter.check(symbol, session)) continue
-            result = when {
-                result == null || result == symbol -> symbol
+            lastSymbol = when {
+                lastSymbol == null -> {
+                    symbols.add(symbol)
+                    symbol
+                }
+                lastSymbol == symbol -> symbol
                 // Importing multiple versions of the same type is normally an ambiguity, but in the case of `kotlin.Throws`,
                 // it should take precedence over platform-specific variants. This is lifted directly from `LazyImportScope`
                 // from the old backend; most likely `Throws` predates expect-actual, and this is a backwards compatibility hack.
                 // TODO: remove redundant versions of `Throws` from the standard library
-                result.classId.isJvmOrNativeThrows && symbol.classId.isCommonThrows -> symbol
-                result.classId.isCommonThrows && symbol.classId.isJvmOrNativeThrows -> result
-                // TODO: if there is an ambiguity at this scope, further scopes should not be checked.
-                //  Doing otherwise causes KT-39073. Also, returning null here instead of an error symbol
-                //  or something produces poor quality diagnostics ("unresolved name" rather than "ambiguity").
-                else -> return null
+                lastSymbol.classId.isJvmOrNativeThrows && symbol.classId.isCommonThrows -> symbol
+                lastSymbol.classId.isCommonThrows && symbol.classId.isJvmOrNativeThrows -> lastSymbol
+                else -> {
+                    symbols.add(symbol)
+                    symbol
+                }
             }
         }
-        return result
+        return if (symbols.size >= 2) {
+            reportAmbiguousType(symbols)
+        } else {
+            lastSymbol
+        }
+    }
+
+    private fun reportAmbiguousType(symbols: List<FirClassLikeSymbol<*>>): FirErrorClassLikeSymbol {
+        val possibleTypes = symbols.mapNotNull { (it as? FirClassSymbol<*>)?.defaultType() }
+        val coneDiagnostic = ConeAmbiguousType(possibleTypes)
+        val someSymbol = symbols.first()
+
+        return FirErrorClassLikeSymbol(coneDiagnostic, someSymbol.classId).also {
+            buildErrorClassLike {
+                source = someSymbol.source
+                moduleData = someSymbol.moduleData
+                origin = someSymbol.origin
+                status = FirResolvedDeclarationStatusImpl(Visibilities.Unknown, Modality.OPEN, EffectiveVisibility.Public)
+                diagnostic = coneDiagnostic
+                symbol = it
+            }
+        }
     }
 
     protected fun processFunctionsByName(name: Name?, imports: List<FirResolvedImport>, processor: (FirNamedFunctionSymbol) -> Unit) {

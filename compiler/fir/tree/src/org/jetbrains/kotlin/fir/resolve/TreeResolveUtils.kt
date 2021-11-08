@@ -5,11 +5,9 @@
 
 package org.jetbrains.kotlin.fir.resolve
 
-import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirClassifierSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirTypeParameterSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.types.ConeAttributes
+import org.jetbrains.kotlin.fir.types.ConeClassErrorType
 import org.jetbrains.kotlin.fir.types.ConeLookupTagBasedType
 import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.impl.ConeClassLikeTypeImpl
@@ -34,6 +32,9 @@ fun FirClassifierSymbol<*>.constructType(
                 isNullable = isNullable,
                 attributes = attributes
             )
+        }
+        is FirErrorClassLikeSymbol -> {
+            ConeClassErrorType(this.diagnostic)
         }
     }
 }

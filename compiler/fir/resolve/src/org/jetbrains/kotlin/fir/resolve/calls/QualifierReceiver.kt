@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.fir.resolve.calls
 
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
+import org.jetbrains.kotlin.fir.declarations.FirErrorClassLike
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
 import org.jetbrains.kotlin.fir.declarations.FirTypeAlias
 import org.jetbrains.kotlin.fir.declarations.utils.expandedConeType
@@ -24,6 +25,7 @@ import org.jetbrains.kotlin.fir.symbols.impl.FirRegularClassSymbol
 fun FirClassLikeDeclaration.fullyExpandedClass(useSiteSession: FirSession): FirRegularClass? {
     if (this is FirTypeAlias) return this.expandedConeType?.lookupTag?.toSymbol(useSiteSession)?.fir?.fullyExpandedClass(useSiteSession)
     if (this is FirRegularClass) return this
+    if (this is FirErrorClassLike) return null
     error("Not supported: $this")
 }
 

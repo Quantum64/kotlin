@@ -25666,6 +25666,12 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             }
 
             @Test
+            @TestMetadata("typeAmbiguity.kt")
+            public void testTypeAmbiguity() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/scopes/typeAmbiguity.kt");
+            }
+
+            @Test
             @TestMetadata("visibility.kt")
             public void testVisibility() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/scopes/visibility.kt");

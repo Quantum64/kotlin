@@ -340,6 +340,11 @@ class ScopeTowerLevel(
         session.lookupTracker?.recordCallLookup(info, scope.scopeOwnerLookupNames)
         scope.processClassifiersByName(info.name) {
             empty = false
+
+            if (it is FirErrorClassLikeSymbol) {
+                return@processClassifiersByName
+            }
+
             processor.consumeCandidate(
                 it, dispatchReceiverValue = null,
                 extensionReceiverValue = null,
