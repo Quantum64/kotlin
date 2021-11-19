@@ -4235,6 +4235,30 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
         }
 
         @Test
+        @TestMetadata("kt20072.kt")
+        public void testKt20072() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolveWithStdlib/kt20072.kt");
+        }
+
+        @Test
+        @TestMetadata("kt39073.kt")
+        public void testKt39073() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolveWithStdlib/kt39073.kt");
+        }
+
+        @Test
+        @TestMetadata("kt39157_1.kt")
+        public void testKt39157_1() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolveWithStdlib/kt39157_1.kt");
+        }
+
+        @Test
+        @TestMetadata("kt39157_2.kt")
+        public void testKt39157_2() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolveWithStdlib/kt39157_2.kt");
+        }
+
+        @Test
         @TestMetadata("listPlusAssign.kt")
         public void testListPlusAssign() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolveWithStdlib/listPlusAssign.kt");

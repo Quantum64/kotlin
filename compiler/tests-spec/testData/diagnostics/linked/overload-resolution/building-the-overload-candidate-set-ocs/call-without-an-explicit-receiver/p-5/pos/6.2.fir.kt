@@ -50,7 +50,7 @@ import libCase2.b.*
 import kotlin.text.*
 
 fun case2() {
-    <!DEBUG_INFO_CALL("fqName: libCase2.a.Regex; typeCall: function")!>Regex("")<!>
+    <!DEBUG_INFO_CALL("fqName: fqName is unknown; typeCall: unresolved")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>Regex<!>("")<!>
 }
 
 // FILE: Lib3.kt
@@ -84,7 +84,7 @@ import libCase3.*
 import kotlin.text.*
 
 fun case3() {
-    <!DEBUG_INFO_CALL("fqName: libCase3.Regex; typeCall: function")!>Regex("")<!>
+    <!DEBUG_INFO_CALL("fqName: fqName is unknown; typeCall: unresolved")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>Regex<!>("")<!>
 }
 
 // FILE: Lib4.kt
@@ -107,7 +107,7 @@ import libCase4.b.*
 import kotlin.text.*
 
 fun case4() {
-    <!DEBUG_INFO_CALL("fqName: libCase4.a.Regex; typeCall: function")!>Regex("")<!>
+    <!DEBUG_INFO_CALL("fqName: fqName is unknown; typeCall: unresolved")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>Regex<!>("")<!>
 }
 
 // FILE: Lib5.kt

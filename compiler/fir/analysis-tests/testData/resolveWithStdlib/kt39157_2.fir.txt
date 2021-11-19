@@ -1,0 +1,20 @@
+FILE: TestCase4.kt
+    package testPackCase4
+
+    public final fun case4(): R|kotlin/Unit| {
+        <Ambiguity: Regex, [libCase4/b/Regex.Regex, kotlin/text/Regex.Regex, libCase4/a/Regex]>#(String())
+    }
+FILE: Lib1.kt
+    package libCase4.a
+
+    public final fun Regex(pattern: R|kotlin/String|): R|kotlin/Unit| {
+    }
+FILE: Lib2.kt
+    package libCase4.b
+
+    public final class Regex : R|kotlin/Any| {
+        public constructor(pattern: R|kotlin/String|): R|libCase4/b/Regex| {
+            super<R|kotlin/Any|>()
+        }
+
+    }

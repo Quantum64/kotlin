@@ -1,0 +1,35 @@
+Module: A
+FILE: A.kt
+    public final class Regex : R|kotlin/Any| {
+        public constructor(string: R|kotlin/String|): R|Regex| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val string: R|kotlin/String| = R|<local>/string|
+            public get(): R|kotlin/String|
+
+        public final fun check(): R|Regex| {
+            ^check this@R|/Regex|
+        }
+
+    }
+FILE: foo.kt
+    public final fun testFoo(): R|kotlin/Unit| {
+        lval resolvesToFoo: R|Regex| = R|/Regex.Regex|(String()).R|/Regex.check|()
+    }
+Module: B
+FILE: B.kt
+    public final class Regex : R|kotlin/Any| {
+        public constructor(): R|Regex| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final fun check(): R|Regex| {
+            ^check this@R|/Regex|
+        }
+
+    }
+FILE: bar.kt
+    public final fun testBar(): R|kotlin/Unit| {
+        lval resolvesToStdlib: <ERROR TYPE REF: Unresolved name: check> = R|kotlin/text/Regex.Regex|(String()).<Unresolved name: check>#()
+    }

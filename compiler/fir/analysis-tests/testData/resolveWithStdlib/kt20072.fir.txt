@@ -1,0 +1,25 @@
+FILE: 1.kt
+    package a
+
+    public final class A : R|kotlin/Any| {
+        public constructor(): R|a/A| {
+            super<R|kotlin/Any|>()
+        }
+
+    }
+    public final fun A(s: R|kotlin/String| = String()): R|kotlin/Unit| {
+    }
+FILE: 2.kt
+    package b
+
+    public final class A : R|kotlin/Any| {
+        public constructor(): R|b/A| {
+            super<R|kotlin/Any|>()
+        }
+
+    }
+FILE: 3.kt
+    package c
+
+    public final val test: <ERROR TYPE REF: Ambiguity: A, [a/A.A, b/A.A, a/A]> = <Ambiguity: A, [a/A.A, b/A.A, a/A]>#()
+        public get(): <ERROR TYPE REF: Ambiguity: A, [a/A.A, b/A.A, a/A]>

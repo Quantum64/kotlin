@@ -97,7 +97,7 @@ import libCase3.a.*
 import libCase3.b.*
 
 fun case3() {
-    <!DEBUG_INFO_CALL("fqName: libCase3.a.Regex; typeCall: function")!>Regex("")<!>
+    <!DEBUG_INFO_CALL("fqName: fqName is unknown; typeCall: unresolved")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>Regex<!>("")<!>
 }
 
 // FILE: Lib3.kt
@@ -174,8 +174,8 @@ import libCase6.a.*
 import libCase6.b.*
 
 fun case(){
-    <!DEBUG_INFO_CALL("fqName: libCase6.a.A; typeCall: function")!>A()<!>
-    <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>A()<!>
+    <!DEBUG_INFO_CALL("fqName: fqName is unknown; typeCall: unresolved")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>A<!>()<!>
+    <!DEBUG_INFO_EXPRESSION_TYPE("ERROR CLASS: Ambiguity: A, [libCase6/b/A.A, libCase6/a/A]")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>A<!>()<!>
 }
 
 // FILE: Lib7.kt
@@ -222,8 +222,8 @@ import libCase8.b.*
 import libCase8.c.*
 
 fun case8(){
-    <!DEBUG_INFO_CALL("fqName: libCase8.a.A; typeCall: function")!>A()<!>
-    A()
+    <!DEBUG_INFO_CALL("fqName: fqName is unknown; typeCall: unresolved")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>A<!>()<!>
+    <!OVERLOAD_RESOLUTION_AMBIGUITY!>A<!>()
 }
 
 // FILE: Lib11.kt
@@ -279,7 +279,7 @@ import libCase10.b.*
 import libCase10.c.*
 
 fun case10(){
-    <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>A()<!>
+    <!DEBUG_INFO_EXPRESSION_TYPE("ERROR CLASS: Ambiguity: A, [libCase10/b/A.A, libCase10/a/A]")!><!OVERLOAD_RESOLUTION_AMBIGUITY!>A<!>()<!>
 }
 
 // FILE: Liba.kt

@@ -12,11 +12,13 @@ import org.jetbrains.kotlin.fir.declarations.builder.buildConstructedClassTypePa
 import org.jetbrains.kotlin.fir.declarations.builder.buildConstructorCopy
 import org.jetbrains.kotlin.fir.declarations.utils.classId
 import org.jetbrains.kotlin.fir.declarations.utils.isInner
+import org.jetbrains.kotlin.fir.diagnostics.ConeAmbiguousType
 import org.jetbrains.kotlin.fir.resolve.*
 import org.jetbrains.kotlin.fir.resolve.substitution.ConeSubstitutor
 import org.jetbrains.kotlin.fir.resolve.substitution.substitutorByMap
 import org.jetbrains.kotlin.fir.symbols.ensureResolved
 import org.jetbrains.kotlin.fir.scopes.FakeOverrideTypeCalculator
+import org.jetbrains.kotlin.fir.scopes.FirCompositeScope
 import org.jetbrains.kotlin.fir.scopes.FirScope
 import org.jetbrains.kotlin.fir.scopes.impl.FirFakeOverrideGenerator
 import org.jetbrains.kotlin.fir.scopes.scopeForClass
@@ -194,7 +196,24 @@ private fun processConstructors(
                     )
                 }
                 is FirErrorClassLikeSymbol -> {
-                    null
+                    val allInnerScopes = mutableListOf<FirScope>()
+                    val diagnostic = matchedSymbol.diagnostic as ConeAmbiguousType
+
+                    for (it in diagnostic.candidateTypes) {
+                        val firClass = it.toSymbol(session)?.fir as FirClass
+
+                        if (firClass.classKind == ClassKind.INTERFACE) {
+                            continue
+                        }
+
+                        val scope = firClass.scopeForClass(
+                            substitutor, session, bodyResolveComponents.scopeSession
+                        )
+
+                        allInnerScopes.add(scope)
+                    }
+
+                    FirCompositeScope(allInnerScopes)
                 }
             }
 

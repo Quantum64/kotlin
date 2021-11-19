@@ -19,7 +19,7 @@ import a.A.<!CONFLICTING_IMPORT!>B<!>
 import a.D.<!CONFLICTING_IMPORT!>B<!>
 
 fun test(b: <!AMBIGUOUS_TYPES!>B<!>) {
-    <!INAPPLICABLE_CANDIDATE!>B<!>()
+    <!OVERLOAD_RESOLUTION_AMBIGUITY!>B<!>()
 }
 
 // FILE: d.kt
@@ -28,5 +28,5 @@ import a.D.*
 
 // todo ambiguvity here
 fun test2(b: <!AMBIGUOUS_TYPES!>B<!>) {
-    <!INAPPLICABLE_CANDIDATE!>B<!>()
+    <!OVERLOAD_RESOLUTION_AMBIGUITY!>B<!>()
 }
